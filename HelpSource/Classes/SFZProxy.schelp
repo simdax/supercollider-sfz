@@ -1,0 +1,31 @@
+TITLE:: SFZ
+summary:: SFZ sample player
+categories:: Quarks>SFZ
+
+DESCRIPTION::
+
+Proxy to the SFZ player lib
+
+CLASSMETHODS::
+
+METHOD::initClass
+Internally create a sfz type
+
+INSTANCEMETHODS::
+
+METHOD:: openPanel
+choose sfz file to load
+
+ARGUMENT:: pattern
+generate a pattern to play sfz file
+
+EXAMPLES::
+
+code::
+a=SFZProxy();
+// choose sfz file
+a.openPanel;
+//play it
+b=a.pattern(\amp, 0.8, \dur, 2, \degree, Pseries())
+b.play
+::
