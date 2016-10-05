@@ -1,33 +1,12 @@
 SFZProxy{
 
-	var <sfz;
-	classvar root;
-
-	famille{
-		^[\brass,
-			\chorus,
-			\keys, \percussion, \strings, \woodwinds
-		]
-	}
-	
-	gui{ arg p, b;
-		// TODO add filter + root box
-		EZListView(p,b).items_(
-			PathName(
-				"/home/simdax/Téléchargements/sfz/sonatina/"
-			).entries
-			.select{arg x;
-				x.extension=="sfz"}
-			.collect{arg x;
-				x.fileName
-				-> {this.load(x.absolutePath)}
-			}
-		)
-		
-	}
+	var <sfz,
+	// g is GUI Window
+	<g;
+	classvar <>root="/home/simdax/Téléchargements/sfz/sonatina/";
 	
 	*initClass{
-		root="/home/simdax/Téléchargements";
+		//		root=
 		Event.addEventType(\sfz, {
 			var amp=\midivelocity.asSpec.map(~amp.value); 
 			var note=~midinote.value;
@@ -40,12 +19,48 @@ SFZProxy{
 			?? { ~type=\rest}
 		});	
 	}
+	*entries{
+		^PathName(
+			this.root
+		).entries.select{arg x;	x.extension=="sfz"}
+	}
+	*famille{
+		^[\brass,
+			\chorus,
+			\keys, \percussion, \strings, \woodwinds
+		]
+	}
+	*find{ arg fam=this.famille.choose;
+		^this.entries
+		.select{arg x;(fam.asString).matchRegexp(x.fileName)}
+		.collect(_.absolutePath)
+	}
+	gui{ arg p, b, label;
+		// TODO add filter + root box
+		g=EZListView(p,b,label).items_(
+			this.class.entries
+			.collect{arg x;
+				x.fileName
+				-> {this.load(x.absolutePath)}
+			}
+		)
+		
+	}
+	findIndex{
+		arg name;
+		^g.items.detectIndex{arg assoc;
+			name==assoc.key
+		}
+	}
 	load{ arg path;
 		Server.default.waitForBoot
 		{
 			sfz !? {sfz.free};
-			sfz=SFZ(path);
+			sfz=SFZ(PathName(path).absolutePath);
 			sfz.prepare;
+			g!?{g.value_(
+				this.findIndex(PathName(path).fileName)
+			)}
 		}
 	}
 	openPanel{
