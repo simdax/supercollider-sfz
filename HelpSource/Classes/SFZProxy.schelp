@@ -25,6 +25,8 @@ code::
 a=SFZProxy();
 // choose sfz file
 a.openPanel;
+// or
+a.gui // take root file var
 //play it
 b=a.pattern(\amp, 0.8, \dur, 2, \degree, Pseries())
 b.play
