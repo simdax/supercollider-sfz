@@ -31,12 +31,13 @@ SFZProxy{
 		Event.addEventType(\sfz, {
 			var amp=\midivelocity.asSpec.map(~amp.value); 
 			var note=~midinote.value;
-			//	if(amp<1){amp=60};
-			r{
+			~inst !?
+			{r{
 				~inst.noteOn(amp, note);
 				(~dur*~legato).wait;
 				~inst.noteOff(amp, note)
-			}.play	
+			}.play	}
+			?? { ~type=\rest}
 		});	
 	}
 	load{ arg path;
@@ -57,23 +58,28 @@ SFZProxy{
 			this.load(f.value);
 		}
 	}
+	// pattern{ arg ... args;
+	// 	sfz !?{
+	// 		^
+	// 		Pdef(\_sfz,
+	// 		// Pfset(
+	// 		// 	{ var ok=false;
+	// 		// 		~inst=sfz.prepare({ok=true});
+	// 		// 		while{ok.not}{0.1.wait};
+	// 		// 	},
+	// 			Pbind(
+	// 				*[\inst, sfz, \type, \sfz]++args
+	// 			),
+	// 		//				{sfz.free}
+	// 		//)
+	// 	)
+	// 	}
+	// 	?? {
+	// 		Error("pas de sfz chargé!".throw)
+	// 	}
+	// }
+
 	pattern{ arg ... args;
-		sfz !?{
-	 	^Pdef(\_sfz,
-			// Pfset(
-			// 	{ var ok=false;
-			// 		~inst=sfz.prepare({ok=true});
-			// 		while{ok.not}{0.1.wait};
-			// 	},
-				Pbind(
-					*[\inst, sfz, \type, \sfz]++args
-				),
-			//				{sfz.free}
-			//)
-		)
-		}
-		?? {
-			Error("pas de sfz chargé!".throw)
-		}
+		^(Pbind(\type, \sfz, \inst, Pfunc{sfz})<>Pbind(*args))
 	}
 }
