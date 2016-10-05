@@ -3,10 +3,20 @@ SFZProxy{
 	var <sfz,
 	// g is GUI Window
 	<g;
+
 	classvar <>root="/home/simdax/Téléchargements/sfz/sonatina/";
-	
+	classvar <all;
+	*clearAll{
+		all.do{_.free}
+	}
+	*new{
+		var res=super.new;
+		all.add(res)
+		^res
+	}
 	*initClass{
-		//		root=
+		Class.initClassTree(ObjectTable);
+		all=ObjectTable();
 		Event.addEventType(\sfz, {
 			var amp=\midivelocity.asSpec.map(~amp.value); 
 			var note=~midinote.value;
