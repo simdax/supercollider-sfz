@@ -1,13 +1,15 @@
 SFZProxy{
 
 	var <sfz,
+	// when loading buffers while playing
 	// g is GUI Window
 	<g;
+	classvar go=false;
 
 	classvar <>root="/home/simdax/Téléchargements/sfz/sonatina/";
 	classvar <all;
 	*clearAll{
-		all.do{_.free}
+		all.do(_.free)
 	}
 	*new{
 		var res=super.new;
@@ -17,15 +19,19 @@ SFZProxy{
 	*initClass{
 		Class.initClassTree(ObjectTable);
 		all=ObjectTable();
+
 		Event.addEventType(\sfz, {
 			var amp=\midivelocity.asSpec.map(~amp.value); 
 			var note=~midinote.value;
-			~inst !?
-			{r{
-				~inst.noteOn(amp, note);
-				(~dur*~legato).wait;
-				~inst.noteOff(amp, note)
-			}.play	}
+			go.if
+			{
+				fork{
+					~inst.noteOn(amp, note);
+					(~dur*~legato).wait;
+					~inst.noteOff(amp, note);
+					(~dur*(1-~legato)).wait;
+				}
+			}
 			?? { ~type=\rest}
 		});	
 	}
@@ -66,8 +72,9 @@ SFZProxy{
 		Server.default.waitForBoot
 		{
 			sfz !? {sfz.free};
+			go=false;
 			sfz=SFZ(PathName(path).absolutePath);
-			sfz.prepare;
+			sfz.prepare({go=true});
 			g!?{g.value_(
 				this.findIndex(PathName(path).fileName)
 			)}
