@@ -2,11 +2,34 @@ SFZProxy{
 
 	var <sfz;
 	classvar root;
+
+	famille{
+		^[\brass,
+			\chorus,
+			\keys, \percussion, \strings, \woodwinds
+		]
+	}
+	
+	gui{
+		// TODO add filter + root box
+		EZListView().items_(
+			PathName(
+				"/home/simdax/Téléchargements/sfz/sonatina/"
+			).entries
+			.select{arg x;
+				x.extension=="sfz"}
+			.collect{arg x;
+				x.fileName
+				-> {this.load(x.absolutePath)}
+			}
+		)
+		
+	}
 	
 	*initClass{
 		root="/home/simdax/Téléchargements";
 		Event.addEventType(\sfz, {
-			var amp=\midivelocity.asSpec.map(~amp.value)*2; 
+			var amp=\midivelocity.asSpec.map(~amp.value); 
 			var note=~midinote.value;
 			//	if(amp<1){amp=60};
 			r{
