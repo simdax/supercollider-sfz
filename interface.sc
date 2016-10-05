@@ -16,6 +16,14 @@ SFZProxy{
 			}.play	
 		});	
 	}
+	load{ arg path;
+		Server.default.waitForBoot
+		{
+			sfz !? {sfz.free};
+			sfz=SFZ(path);
+			sfz.prepare;
+		}
+	}
 	openPanel{
 		var f;
 		fork{
@@ -23,8 +31,7 @@ SFZProxy{
 			f=FlowVar();
 			defer{Dialog.openPanel{arg x; f.value_(x)}};
 			f.value;
-			sfz=SFZ(f.value);
-			sfz.prepare
+			this.load(f.value);
 		}
 	}
 	pattern{ arg ... args;
