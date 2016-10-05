@@ -10,9 +10,9 @@ SFZProxy{
 		]
 	}
 	
-	gui{
+	gui{ arg p, b;
 		// TODO add filter + root box
-		EZListView().items_(
+		EZListView(p,b).items_(
 			PathName(
 				"/home/simdax/Téléchargements/sfz/sonatina/"
 			).entries
