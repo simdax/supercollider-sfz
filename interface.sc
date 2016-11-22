@@ -23,6 +23,7 @@ SFZProxy{
 		Event.addEventType(\sfz, {
 			var amp=\midivelocity.asSpec.map(~amp.value); 
 			var note=~midinote.value;
+			~inst.isNumber.if{~inst=SFZProxy.all.at(~inst).sfz};
 			go.if
 			{
 				fork{
@@ -33,7 +34,11 @@ SFZProxy{
 				}
 			}
 			?? { ~type=\rest}
-		});	
+		});
+		File.exists(root).not.if{
+			"La lib n'a pas réussi à repérer le dossier Sonatina à : "++root++" !".warn
+		}
+
 	}
 
 	// root searching etc..
@@ -67,7 +72,7 @@ SFZProxy{
 	}
 	*gui{ arg p=FlowView(),b;
 		all.do { |item, index|
-			item.gui(p,label:index)
+			item.gui(p,label:all.getID(p))
 		};
 	}
 	findIndex{
