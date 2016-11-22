@@ -8,3 +8,10 @@ I am developing this vertically, implementing features only as I need them. If y
 
     x.noteOn(64, 60);
     x.noteOff(64, 60);
+
+
+
+SFZProxy
+==
+
+I added that to easify the manipulation. Check examples, io.

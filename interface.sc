@@ -35,6 +35,8 @@ SFZProxy{
 			?? { ~type=\rest}
 		});	
 	}
+
+	// root searching etc..
 	*entries{
 		^PathName(
 			this.root
@@ -51,6 +53,8 @@ SFZProxy{
 		.select{arg x;(fam.asString).matchRegexp(x.fileName)}
 		.collect(_.absolutePath)
 	}
+	
+	// GUI thing
 	gui{ arg p, b, label;
 		// TODO add filter + root box
 		g=EZListView(p,b,label).items_(
@@ -59,8 +63,12 @@ SFZProxy{
 				x.fileName
 				-> {this.load(x.absolutePath)}
 			}
-		)
-		
+		)		
+	}
+	*gui{ arg p=FlowView(),b;
+		all.do { |item, index|
+			item.gui(p,label:index)
+		};
 	}
 	findIndex{
 		arg name;
@@ -113,6 +121,10 @@ SFZProxy{
 
 	pattern{ arg ... args;
 		sfz ?? {Error("vazi, charge du sfz d'abord").throw};
-		^(Pbind(\type, \sfz, \inst, Pfunc{sfz})<>Pbind(*args))
+		^(Pbind(\type, \sfz,\inst, Pfunc{sfz})
+			<>
+			Pbind(*args)
+			<> (amp:0.8) // or you won't hear ...
+		)
 	}
 }
