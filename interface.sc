@@ -112,6 +112,7 @@ SFZProxy{
 	// }
 
 	pattern{ arg ... args;
+		sfz ?? {Error("vazi, charge du sfz d'abord").throw};
 		^(Pbind(\type, \sfz, \inst, Pfunc{sfz})<>Pbind(*args))
 	}
 }
